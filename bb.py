@@ -1,4 +1,4 @@
-import os
+জজimport os
 import threading
 from flask import Flask
 import logging
@@ -2495,5 +2495,5 @@ def main():
     app.run_polling()
 
 
-if name == "main":
+if__name__=="__main__":
     main()
