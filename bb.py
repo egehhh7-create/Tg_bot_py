@@ -30,10 +30,14 @@ flask_app = Flask('')
 def home():
     return "Bot is alive and running 24/7!"
 
-def run_web_server():
+def start_flask():
     port = int(os.environ.get("PORT", 8080))
-    flask_app.run(host='0.0.0.0', port=port)
+    # use_reloader=False দিলে পাইথনের মেইন ইভেন্ট লুপ ব্রেক হয় না
+    flask_app.run(host='0.0.0.0', port=port, use_reloader=False)
 
+def run_web_server():
+    t = threading.Thread(target=start_flask, daemon=True)
+    t.start()
 # =========================
 # CONFIG
 # =========================
@@ -2431,11 +2435,15 @@ async def post_init(
 # MAIN
 # =========================
 
+# =========================
+# MAIN
+# =========================
+
 def main():
     init_db()
 
-    # Render-এ ২৪/৭ সচল রাখার জন্য Flask ওয়েব সার্ভার চালু করা হচ্ছে
-    threading.Thread(target=run_web_server, daemon=True).start()
+    # মেইন থ্রেডকে ব্লক না করে আলাদা থ্রেডে ফ্লাস্ক ব্যাকগ্রাউন্ড সার্ভার চালু করা হচ্ছে
+    run_web_server()
 
     if (
         BOT_TOKEN
@@ -2487,5 +2495,5 @@ def main():
     app.run_polling()
 
 
-if __name__ == "__main__":
+if name == "main":
     main()
